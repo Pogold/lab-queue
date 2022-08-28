@@ -64,6 +64,8 @@ def join_queue(queue_name, user_id, user_name):
 
 
 def create_queue(queue_name, user_id, user_name):
+    if queue_name == "users":
+        return 'Name {} forbidden!'.format(queue_name)
     if len(queues) != 0:
         for que in queues:
             if que.get_qname() == queue_name:

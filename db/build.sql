@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS users (
+     UserID INTEGER PRIMARY KEY,
+     UserName VARCHAR NOT NULL
+);
+
+--CREATE TABLE IF NOT EXISTS {} (
+--     QueueID integer PRIMARY KEY AUTOINCREMENT,
+--     QueueName VARCHAR,
+--     FK_UserID INTEGER,
+--     FOREIGN KEY (FK_UserID)
+--    REFERENCES users (UserID)
+--       ON UPDATE CASCADE
+--       ON DELETE CASCADE
+--);
