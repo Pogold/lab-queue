@@ -38,8 +38,7 @@ async def on_ready():
 #     for msg in ['!showq', '!show', '!join', '!leave', '!rejoin', '!info']:
 #         if msg in message.content:
 #             await message.delete()
-#channel(1014250769651879936)
-
+# channel(1014250769651879936)
 
 
 @bot.event
@@ -54,7 +53,6 @@ async def on_command_error(ctx, error):
         await ctx.send("I don't have sufficient permissions!", delete_after=10)
 
 
-
 @bot.command()
 async def showq(ctx: commands.Context):
     # if len(personqueue.queues) == 0:
@@ -66,38 +64,37 @@ async def showq(ctx: commands.Context):
     #     for que in personqueue.queues:
     #         await ctx.author.send('{}.{}'.format(i, que.qname), delete_after=120)
     #         i += 1
-    ques = personqueue.mng_all_queues()
-    if not ques:
+    queues = personqueue.mng2_all_queues()
+    if not queues:
         await ctx.author.send('No Queues!', delete_after=15)
         return -1
     else:
         i = 1
         await ctx.author.send('Queues:', delete_after=120)
-        for que in ques:
-            await ctx.author.send('{}.{}'.format(i, que), delete_after=120)
+        for queue in queues:
+            await ctx.author.send('{}.{}'.format(i, queue["name"]), delete_after=120)
             i += 1
 
 
 @bot.command()
 async def show(ctx: commands.Context, queue_name):
-    que = personqueue.mng_get_users(queue_name)
-    if isinstance(que, str):
-        await ctx.author.send(que)
+    users = personqueue.mng2_get_users(queue_name)
+    if isinstance(users, str):
+        await ctx.author.send(users)
         return -1
-    elif que:
+    elif users:
         await ctx.author.send('Queue {}:'.format(queue_name), delete_after=120)
         i = 1
-        for person in que:
-            await ctx.author.send('{}.{}'.format(i, person['user_name']), delete_after=120)
+        for user in users:
+            await ctx.author.send('{}.{}'.format(i, user), delete_after=120)
             i += 1
     else:
         await ctx.author.send('Queue {} is empty!'.format(queue_name), delete_after=120)
 
 
-
 @bot.command()
 async def create(ctx: commands.Context, queue_name):
-    msg = personqueue.mng_create_queue(queue_name, ctx.author)
+    msg = personqueue.mng2_create_queue(queue_name, ctx.author)
     await ctx.author.send(msg, delete_after=120)
     # if personqueue.command_check(ctx.message.content):
     #     await ctx.message.delete()
@@ -105,21 +102,21 @@ async def create(ctx: commands.Context, queue_name):
 
 @bot.command()
 async def join(ctx: commands.Context, queue_name):
-    msg = personqueue.mng_join_queue(queue_name, ctx.author)
+    msg = personqueue.mng2_join_queue(queue_name, ctx.author)
     await ctx.author.send(msg, delete_after=120)
     # await ctx.channel.send(msg, delete_after=120)
 
 
 @bot.command()
 async def leave(ctx: commands.Context, queue_name):
-    msg = personqueue.mng_leave_queue(queue_name, ctx.author)
+    msg = personqueue.mng2_leave_queue(queue_name, ctx.author)
     await ctx.author.send(msg, delete_after=120)
     # await ctx.channel.send(msg, delete_after=120)
 
 
 @bot.command()
 async def rejoin(ctx: commands.Context, queue_name):
-    msg = personqueue.mng_rejoin_queue(queue_name, ctx.author)
+    msg = personqueue.mng2_rejoin_queue(queue_name, ctx.author)
     await ctx.author.send(msg, delete_after=120)
     # await ctx.channel.send(msg, delete_after=120)
 
