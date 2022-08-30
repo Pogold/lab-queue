@@ -1,11 +1,16 @@
 from os.path import isfile
 from sqlite3 import connect
+import sqlite3
 
 DB_PATH = "./db/bot_db.db"
 BUILD_PATH = "./db/build.sql"
 
-cxn = connect(DB_PATH, check_same_thread=False)
-cur = cxn.cursor()
+try:
+    cxn = connect(DB_PATH, check_same_thread=False)
+    cur = cxn.cursor()
+
+except sqlite3.Error as error:
+    print("Error to connect sqlite", error)
 
 
 def with_commit(func):
@@ -97,7 +102,7 @@ def delete_user(user_id):
 
 def create_table_queue(qname):
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS ? (QueueID integer PRIMARY KEY AUTOINCREMENT,QueueName VARCHAR, FK_UserID INTEGER "
+        "CREATE TABLE IF NOT EXISTS ? (QueueID integer PRIMARY KEY AUTOINCREMENT,? VARCHAR, FK_UserID INTEGER "
         "FOREIGN KEY (FK_UserID) REFERENCES users (UserID) ON UPDATE CASCADE ON DELETE CASCADE",
         qname)
     commit()
@@ -125,3 +130,33 @@ def delete_queue(qname):
         commit()
 
     return 1
+
+
+def check_queue(qname):
+    if len(cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='{?}'", qname).fetchone()) == 0:
+        return 1
+    else:
+        return -1
+
+
+def check_user(user_id):
+    if len(cur.execute("SELECT * FROM users WHERE UserID=?", user_id).fetchone()) != 0:
+        return 1
+    else:
+        return -1
+
+
+def check_user_queue(qname, user_id):
+    if len(cur.execute("SELECT * FROM ? WHERE FK_UserID=?", (qname, user_id)).fetchone()) != 0:
+        return 1
+    else:
+        return -1
+
+
+def all_queue():
+    cur.execute("SELECT * FROM sqlite_master WHERE type='table' AND name !='users'")
+    resultset = cur.fetchall()
+    if len(resultset) == 0:
+        return resultset
+    else:
+        return -1
